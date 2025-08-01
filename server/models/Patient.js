@@ -1,11 +1,10 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
 const patientSchema = new mongoose.Schema({
-  hashedPhoneNumber: { type: String, required: true, unique: true },
-  name: String, // optional, not required for lookup
-  binNumber: String, // the bin where the bag is stored
-  scannedAt: { type: Date, default: Date.now }
+  phoneHash: { type: String, required: true, unique: true },
+  binNumber: { type: String, required: true }
 });
 
-module.exports = mongoose.model('Patient', patientSchema);
+module.exports = mongoose.model("Patient", patientSchema);
+
 
