@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
+import { hashPhone } from "../utils/hash";
 
 const PatientForm = () => {
   const [phone, setPhone] = useState("");
@@ -7,47 +8,55 @@ const PatientForm = () => {
   const [lookupBin, setLookupBin] = useState("");
   const [message, setMessage] = useState("");
 
-  const API_BASE = "http://localhost:5000/api/patients"; // Adjust if using Docker or another port
+  const API_BASE = "http://localhost:5000/api/patients";
 
   const handleAddPatient = async () => {
+    const hashedPhone = hashPhone(phone);
     try {
-      await axios.post(API_BASE, { phone, binNumber });
+      await axios.post(API_BASE, { hashedPhone, binNumber });
       setMessage("✅ Patient added successfully");
       setPhone("");
       setBinNumber("");
     } catch (error) {
+      console.error("Add Error:", error.response?.data || error.message);
       setMessage("❌ Error adding patient");
     }
   };
 
   const handleLookup = async () => {
+    const hashedPhone = hashPhone(phone);
     try {
-      const res = await axios.get(`${API_BASE}/${phone}`);
+      const res = await axios.get(`${API_BASE}/${hashedPhone}`);
       setLookupBin(res.data.binNumber);
       setMessage(`📦 Bin: ${res.data.binNumber}`);
     } catch (error) {
+      console.error("Lookup Error:", error.response?.data || error.message);
       setLookupBin("");
       setMessage("❌ Patient not found");
     }
   };
 
   const handleUpdate = async () => {
+    const hashedPhone = hashPhone(phone);
     try {
-      await axios.put(`${API_BASE}/${phone}`, { binNumber });
+      await axios.put(`${API_BASE}/${hashedPhone}`, { binNumber });
       setMessage("✅ Bin updated successfully");
     } catch (error) {
+      console.error("Update Error:", error.response?.data || error.message);
       setMessage("❌ Error updating bin");
     }
   };
 
   const handleDelete = async () => {
+    const hashedPhone = hashPhone(phone);
     try {
-      await axios.delete(`${API_BASE}/${phone}`);
+      await axios.delete(`${API_BASE}/${hashedPhone}`);
       setMessage("✅ Patient deleted");
       setLookupBin("");
       setPhone("");
       setBinNumber("");
     } catch (error) {
+      console.error("Delete Error:", error.response?.data || error.message);
       setMessage("❌ Error deleting patient");
     }
   };
